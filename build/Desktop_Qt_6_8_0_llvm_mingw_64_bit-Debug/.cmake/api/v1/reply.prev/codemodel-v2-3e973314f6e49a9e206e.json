@@ -1,0 +1,79 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"hasInstallRule" : true,
+					"jsonFile" : "directory-.-Debug-8dc8c3191feb5a1ddb7e.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.16"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0
+					],
+					"name" : "AutoTTS",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "AutoTTS::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-AutoTTS-Debug-dcadedafb4ac29e2c66d.json",
+					"name" : "AutoTTS",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "AutoTTS_autogen::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-AutoTTS_autogen-Debug-2308ea0e8557906536cf.json",
+					"name" : "AutoTTS_autogen",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "AutoTTS_autogen_timestamp_deps::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-AutoTTS_autogen_timestamp_deps-Debug-29f46376f46e97bb1892.json",
+					"name" : "AutoTTS_autogen_timestamp_deps",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "C:/Users/panjk0518/Documents/Qt/AutoTTS/build/Desktop_Qt_6_8_0_llvm_mingw_64_bit-Debug",
+		"source" : "C:/Users/panjk0518/Documents/Qt/AutoTTS"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 7
+	}
+}
