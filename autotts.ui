@@ -31,7 +31,7 @@
        </widget>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1000000000,1,1,1,1,1,1,1,1">
+       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="1,1,1,1000000000,1,1,1,1,1,1,1,1">
         <item>
          <widget class="QPushButton" name="ReadButton">
           <property name="text">
@@ -50,7 +50,17 @@
          </widget>
         </item>
         <item>
-         <widget class="QLabel" name="label">
+         <widget class="QPushButton" name="FormatButton">
+          <property name="toolTip">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;替换中文和英文逗号、换行为空格&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+          <property name="text">
+           <string>格式化</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="BlankLabel">
           <property name="text">
            <string/>
           </property>

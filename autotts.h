@@ -56,6 +56,8 @@ private slots:
 
     void on_AboutQtButton_triggered();
 
+    void on_FormatButton_clicked();
+
 private:
     Ui::AutoTTS *ui;
 };

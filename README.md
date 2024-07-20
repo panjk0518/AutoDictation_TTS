@@ -11,7 +11,18 @@
 在使用在线 TTS 前，请先配置运行环境：
 
 1. 安装 Python: https://www.python.org/downloads/
-2. 安装 edge-tts: 按下键盘上的 Windows 键 + X 键，之后在弹出的菜单中单击“终端管理员”或“Windows Powershell（管理员）”，在弹出的终端窗口中输入 python -m pip install edge-tts 并回车运行。如无法访问或下载速度较慢，可尝试 python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple edge-tts
+
+2. 安装 edge-tts: 按下键盘上的 Windows 键 + X 键，之后在弹出的菜单中单击“终端管理员”或“Windows Powershell（管理员）”，在弹出的终端窗口中输入 
+
+   ```powershell
+   python -m pip install edge-tts
+   ```
+
+   并回车运行。如无法访问或下载速度较慢，可尝试 
+
+   ```powershell
+   python -m pip install -i https://pypi.tuna.tsinghua.edu.cn/simple edge-tts
+   ```
 
 现在，您应该可以正常使用在线 TTS 了。
 

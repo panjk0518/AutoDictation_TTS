@@ -56,6 +56,7 @@ void AutoTTS::on_ReadButton_clicked()
     ui -> LocalTTSSelectionButton -> setEnabled(false);
     ui -> TextToRead -> setFocus();
     ui -> TextToRead -> moveCursor(QTextCursor::Start);
+    ui -> FormatButton -> setEnabled(false);
     if (isLocalTTS) {
         if (tts -> state() == QTextToSpeech::Ready) {
             for (int i = 0; i < Texts.length(); i++) {
@@ -71,10 +72,15 @@ void AutoTTS::on_ReadButton_clicked()
                 for (int j = 0; j < ui -> RepeatInput -> value(); j++) {
                     tts -> say(Texts[i]);
                     AutoTTS::SleepFor(2000);
+                    if (isStopButtonClicked) {
+                        isStopButtonClicked = false;
+                        ui -> statusbar -> showMessage("听写已取消");
+                        goto exitRead;
+                    }
                 }
                 if (i != Texts.length() - 1) AutoTTS::SleepFor(((ui -> SeparatingTimeSlider -> value()) - (ui -> RepeatInput -> value()) * 2) * 1000);
+                ui -> statusbar -> showMessage("听写完成");
             }
-
         }
     }
     else {
@@ -101,17 +107,24 @@ void AutoTTS::on_ReadButton_clicked()
             for (int j = 0; j < ui -> RepeatInput -> value(); j++) {
                 AutoTTS::SleepFor(2000);
                 Player -> play();
+                if (isStopButtonClicked) {
+                    isStopButtonClicked = false;
+                    ui -> statusbar -> showMessage("听写已取消");
+                    goto exitRead;
+                }
             }
             if (i != Texts.length() - 1) AutoTTS::SleepFor(((ui -> SeparatingTimeSlider -> value()) - (ui -> RepeatInput -> value()) * 2) * 1000);
+            ui -> statusbar -> showMessage("听写完成");
         }
     }
-    ui -> statusbar -> showMessage("听写完成");
+exitRead:
     ui -> TextToRead -> moveCursor(QTextCursor::End);
     ui -> ReadButton -> setEnabled(true);
     ui -> StopButton -> setEnabled(false);
     ui -> VoiceSelector -> setEnabled(true);
     ui -> EdgeTTSSelectionButton -> setEnabled(true);
     ui -> LocalTTSSelectionButton -> setEnabled(true);
+    ui -> FormatButton -> setEnabled(true);
 }
 
 
@@ -194,7 +207,7 @@ void AutoTTS::on_SaveButton_triggered()
 
 void AutoTTS::on_AboutButton_triggered()
 {
-    QMessageBox::about(this, "关于", "自动听写软件\nVersion 0.9 (Beta)\n作者 panjk0518\n本软件使用了以下库：\nQt 6.8.0\nedge-tts 作者 rany2 (https://github.com/rany2/edge-tts)\n本软件以 GNU GPL 3.0 发布。详见 https://www.gnu.org/licenses/gpl-3.0.html#license-text");
+    QMessageBox::about(this, "关于", "自动听写软件\nVersion 1.0.0\n作者 panjk0518\n本软件使用了以下库：\nQt 6.8.0\nedge-tts 作者 rany2 (https://github.com/rany2/edge-tts)\n本软件以 GNU GPL 3.0 发布。详见 https://www.gnu.org/licenses/gpl-3.0.html#license-text");
 }
 
 
@@ -207,5 +220,15 @@ void AutoTTS::on_HelpButton_triggered()
 void AutoTTS::on_AboutQtButton_triggered()
 {
     QMessageBox::aboutQt(this, "About Qt");
+}
+
+
+void AutoTTS::on_FormatButton_clicked()
+{
+    QString TextToRead = ui -> TextToRead -> toPlainText();
+    TextToRead.replace("，", " ");
+    TextToRead.replace(",", " ");
+    TextToRead.replace("\n", " ");
+    ui -> TextToRead -> setText(TextToRead);
 }
 
