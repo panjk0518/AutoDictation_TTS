@@ -6,10 +6,12 @@
 #include <QProcess>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QtConcurrent/QtConcurrentRun>
 #pragma execution_character_set("utf-8")
 using namespace Qt::StringLiterals;
 bool isStopButtonClicked = false;
 bool isLocalTTS = true;
+const QString VERSION = "1.0.1";
 AutoTTS::AutoTTS(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AutoTTS)
@@ -57,6 +59,7 @@ void AutoTTS::on_ReadButton_clicked()
     ui -> TextToRead -> setFocus();
     ui -> TextToRead -> moveCursor(QTextCursor::Start);
     ui -> FormatButton -> setEnabled(false);
+    ui -> TextToRead -> setEnabled(false);
     if (isLocalTTS) {
         if (tts -> state() == QTextToSpeech::Ready) {
             for (int i = 0; i < Texts.length(); i++) {
@@ -78,7 +81,15 @@ void AutoTTS::on_ReadButton_clicked()
                         goto exitRead;
                     }
                 }
-                if (i != Texts.length() - 1) AutoTTS::SleepFor(((ui -> SeparatingTimeSlider -> value()) - (ui -> RepeatInput -> value()) * 2) * 1000);
+                if (i != Texts.length() - 1)
+                    for (int j = 0; j < ((ui -> SeparatingTimeSlider -> value()) - (ui -> RepeatInput -> value()) * 2) * 1000; j += 100) {
+                        AutoTTS::SleepFor(100);
+                        if (isStopButtonClicked) {
+                            isStopButtonClicked = false;
+                            ui -> statusbar -> showMessage("听写已取消");
+                            goto exitRead;
+                        }
+                    }
                 ui -> statusbar -> showMessage("听写完成");
             }
         }
@@ -105,15 +116,23 @@ void AutoTTS::on_ReadButton_clicked()
             process.waitForFinished();
             Player -> setSource(QUrl::fromLocalFile(currentFilePath));
             for (int j = 0; j < ui -> RepeatInput -> value(); j++) {
-                AutoTTS::SleepFor(2000);
                 Player -> play();
+                AutoTTS::SleepFor(2000);
                 if (isStopButtonClicked) {
                     isStopButtonClicked = false;
                     ui -> statusbar -> showMessage("听写已取消");
                     goto exitRead;
                 }
             }
-            if (i != Texts.length() - 1) AutoTTS::SleepFor(((ui -> SeparatingTimeSlider -> value()) - (ui -> RepeatInput -> value()) * 2) * 1000);
+            if (i != Texts.length() - 1)
+                for (int j = 0; j < ((ui -> SeparatingTimeSlider -> value()) - (ui -> RepeatInput -> value()) * 2) * 1000; j += 100) {
+                    AutoTTS::SleepFor(100);
+                    if (isStopButtonClicked) {
+                        isStopButtonClicked = false;
+                        ui -> statusbar -> showMessage("听写已取消");
+                        goto exitRead;
+                    }
+                }
             ui -> statusbar -> showMessage("听写完成");
         }
     }
@@ -125,6 +144,7 @@ exitRead:
     ui -> EdgeTTSSelectionButton -> setEnabled(true);
     ui -> LocalTTSSelectionButton -> setEnabled(true);
     ui -> FormatButton -> setEnabled(true);
+    ui -> TextToRead -> setEnabled(true);
 }
 
 
@@ -207,7 +227,7 @@ void AutoTTS::on_SaveButton_triggered()
 
 void AutoTTS::on_AboutButton_triggered()
 {
-    QMessageBox::about(this, "关于", "自动听写软件\nVersion 1.0.0\n作者 panjk0518\n本软件使用了以下库：\nQt 6.8.0\nedge-tts 作者 rany2 (https://github.com/rany2/edge-tts)\n本软件以 GNU GPL 3.0 发布。详见 https://www.gnu.org/licenses/gpl-3.0.html#license-text");
+    QMessageBox::about(this, "关于", "自动听写软件\nVersion " + VERSION + "\n作者 panjk0518\n本软件使用了以下库：\nQt 6.8.0\nedge-tts 作者 rany2 (https://github.com/rany2/edge-tts)\n本软件以 GNU GPL 3.0 发布。详见 https://www.gnu.org/licenses/gpl-3.0.html#license-text");
 }
 
 
@@ -226,9 +246,11 @@ void AutoTTS::on_AboutQtButton_triggered()
 void AutoTTS::on_FormatButton_clicked()
 {
     QString TextToRead = ui -> TextToRead -> toPlainText();
-    TextToRead.replace("，", " ");
-    TextToRead.replace(",", " ");
-    TextToRead.replace("\n", " ");
+    QtConcurrent::run([&]() {
+        TextToRead.replace("，", " ");
+        TextToRead.replace(",", " ");
+        TextToRead.replace("\n", " ");
+    });
     ui -> TextToRead -> setText(TextToRead);
 }
 
