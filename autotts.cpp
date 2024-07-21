@@ -7,11 +7,12 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QtConcurrent/QtConcurrentRun>
+#include <QRegularExpression>
 #pragma execution_character_set("utf-8")
 using namespace Qt::StringLiterals;
 bool isStopButtonClicked = false;
 bool isLocalTTS = true;
-const QString VERSION = "1.0.1";
+const QString VERSION = "1.0.2";
 AutoTTS::AutoTTS(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::AutoTTS)
@@ -45,6 +46,7 @@ AutoTTS::~AutoTTS()
 
 void AutoTTS::on_ReadButton_clicked()
 {
+    ui -> FormatButton -> click();
     QString Text = ui -> TextToRead -> toPlainText().trimmed();
     if (Text == "") {
         ui -> statusbar -> showMessage("未输入内容！");
@@ -246,11 +248,15 @@ void AutoTTS::on_AboutQtButton_triggered()
 void AutoTTS::on_FormatButton_clicked()
 {
     QString TextToRead = ui -> TextToRead -> toPlainText();
-    QtConcurrent::run([&]() {
+    auto ret = QtConcurrent::run([](QString TextToRead) -> QString {
         TextToRead.replace("，", " ");
         TextToRead.replace(",", " ");
         TextToRead.replace("\n", " ");
-    });
-    ui -> TextToRead -> setText(TextToRead);
+        QRegularExpression spaces("[\\s]+");
+        TextToRead.replace(spaces, " ");
+        TextToRead = TextToRead.trimmed();
+        return TextToRead;
+    }, TextToRead);
+    ui -> TextToRead -> setText(ret.result());
 }
 
